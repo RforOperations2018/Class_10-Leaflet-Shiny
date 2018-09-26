@@ -53,14 +53,9 @@ ui <- navbarPage("NYC Green Infrastructure",
 server <- function(input, output) {
    
    output$leaflet <- renderLeaflet({
-     # Load green infrastructure filtered data
-     greenInf <- greenInfInputs()
-     
-     # Build Map
      leaflet() %>%
        addTiles(urlTemplate = "http://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}&s=Ga", attribution = "Google") %>%
-     addAwesomeMarkers(data = greenInf, icon = ~icons[sewer_type], popup = ~paste0("<b>", project_na, "</b>: ", sewer_type, group = "greenInf"))
-       
+       setView(-74.0060, 40.7128, 9)
    })
     
    greenInfInputs <- reactive({
@@ -74,6 +69,17 @@ server <- function(input, output) {
      
      return(greenInf)
    })
+   
+   observe({
+     greenInf <- greenInfInputs()
+     
+     leafletProxy("leaflet", data = greenInf) %>%
+       # In this case either lines 77 or 78 will work
+       # clearMarkers() %>%
+       clearGroup(group = "greenInf") %>%
+       addAwesomeMarkers(icon = ~icons[sewer_type], popup = ~paste0("<b>", project_na, "</b>: ", sewer_type), group = "greenInf", layerId = ~asset_id)
+   })
+   
    output$table <- DT::renderDataTable(greenInfInputs()@data, options = list(scrollX = T))
 }
 
