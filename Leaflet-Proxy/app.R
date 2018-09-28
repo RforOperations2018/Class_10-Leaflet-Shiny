@@ -65,8 +65,11 @@ server <- function(input, output) {
    # Basic Map
    output$leaflet <- renderLeaflet({
      leaflet() %>%
-       addTiles(urlTemplate = "http://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}&s=Ga", attribution = "Google") %>%
-       setView(-74.0060, 40.7128, 9)
+       addTiles(urlTemplate = "http://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}&s=Ga", attribution = "Google", group = "Google") %>%
+       addProviderTiles(provider = providers$Wikimedia, group = "Wiki") %>%
+       setView(-74.0060, 40.7128, 9) %>%
+       addLayersControl(baseGroups = c("Google", "Wiki"))
+       
    })
    # Green Infrastructure Filtered data
    greenInfInputs <- reactive({

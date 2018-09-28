@@ -59,8 +59,9 @@ server <- function(input, output) {
      # Build Map
      leaflet() %>%
        addTiles(urlTemplate = "http://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}&s=Ga", attribution = "Google") %>%
-     addAwesomeMarkers(data = greenInf, icon = ~icons[sewer_type], popup = ~paste0("<b>", project_na, "</b>: ", sewer_type, group = "greenInf"))
-       
+     addAwesomeMarkers(data = greenInf, icon = ~icons[sewer_type], popup = ~paste0("<b>", project_na, "</b>: ", sewer_type, group = "greenInf")) %>%
+       addProviderTiles(provider = providers$Wikimedia, group = "Wiki") %>%
+       addLayersControl(baseGroups = c("Google", "Wiki"))
    })
     
    greenInfInputs <- reactive({
